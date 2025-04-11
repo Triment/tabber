@@ -4,10 +4,10 @@ import PKCE from 'js-pkce';
 
 // --- Configuration ---
 const AUTH_DOMAIN = 'openid.reqack.com'; // Define domain centrally
-const WEB_CLIENT_ID = 'f9b1d60f-f1df-43b6-9787-bb6d91fc81d4';
-const DESKTOP_CLIENT_ID = 'af3f3e3d-ddd6-4681-a3ba-a0f2003ea353';
+const WEB_CLIENT_ID = 'e9f5135a-fc38-4928-a8e6-3b9db29bb4bf';
+const DESKTOP_CLIENT_ID = 'e9f5135a-fc38-4928-a8e6-3b9db29bb4bf';
 const WEB_REDIRECT_URI = 'http://localhost:1420/login/callback'; // Ensure this matches your dev server
-const DESKTOP_REDIRECT_URI = 'tabber://callback'; // Custom scheme for Tauri
+const DESKTOP_REDIRECT_URI = 'tabber://localhost/callback'; // Custom scheme for Tauri
 
 // --- Platform Detection ---
 type Platform = 'web' | 'desktop';

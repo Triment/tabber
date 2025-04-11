@@ -4,12 +4,11 @@ import { Button } from '@heroui/react'; // Assuming Button is the correct import
 import { getAuthUrl, getPlatform } from '../auth'; // Adjust path if needed
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link'
 import { openUrl } from '@tauri-apps/plugin-opener';
-
+import {  useNavigate } from 'react-router-dom'
 const LoginPage: React.FC = () => {
-
+  let navigate = useNavigate();
   useEffect(()=>{
     onOpenUrl(urls=>{
-      alert(urls[0])
     })
   },[])
   const handleLogin = () => {
