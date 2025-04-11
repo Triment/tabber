@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@heroui/react'; // Assuming Button is the correct import
 // Removed icon import for now
 import { getAuthUrl, getPlatform } from '../auth'; // Adjust path if needed
-import { openUrl } from '@tauri-apps/plugin-opener'
+import { onOpenUrl } from '@tauri-apps/plugin-deep-link'
+import { openUrl } from '@tauri-apps/plugin-opener';
 
 const LoginPage: React.FC = () => {
+
+  useEffect(()=>{
+    onOpenUrl(urls=>{
+      alert(urls[0])
+    })
+  },[])
   const handleLogin = () => {
     const authUrl = getAuthUrl();
     if (getPlatform() === 'desktop') {
