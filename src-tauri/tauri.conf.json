@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "cs2-helper",
+  "productName": "tabber",
   "version": "0.1.0",
   "identifier": "cs2.nmmm.top",
   "build": {
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "cs2-helper",
+        "title": "tabber",
         "width": 800,
         "height": 600
       }
@@ -36,7 +36,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["cs2-helper"]
+        "schemes": ["tabber"]
       }
     }
   }
