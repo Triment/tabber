@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import apiClient from '../lib/axios'; // Import the new Axios client
 import { useExchangeRate } from './useExchangeRate'; // Import the exchange rate hook
 
 // --- Types ---
@@ -33,7 +34,7 @@ export interface CombinedItem extends SteamItemRaw {
 }
 
 interface UseMarketDataProps {
-  accessToken: string | null;
+  // accessToken is no longer needed here, apiClient handles it
   domain: string;
   currentPage: number;
   itemsPerPage: number;
@@ -53,7 +54,7 @@ const BUFF_FEE_RATE = 0.025; // 2.5%
 
 // --- Hook Implementation ---
 export function useMarketData({
-  accessToken,
+  // accessToken removed
   domain,
   currentPage,
   itemsPerPage,
@@ -71,14 +72,7 @@ export function useMarketData({
 
   // Fetch Steam Data
   useEffect(() => {
-    if (!accessToken) {
-      setSteamError('未找到访问令牌');
-      setLoadingSteam(false);
-      setSteamData([]);
-      setTotalCount(0);
-      return;
-    }
-
+    // No need to check accessToken here, apiClient handles it or fails gracefully
     let isMounted = true;
     const fetchSteam = async () => {
       setLoadingSteam(true);
@@ -95,21 +89,22 @@ export function useMarketData({
       });
 
       try {
-        const response = await fetch(`https://${domain}/api/query?${params}`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        });
-        if (!response.ok) throw new Error(`Steam API错误! 状态码: ${response.status}`);
-        const result = await response.json();
+        // Use apiClient.get instead of fetch
+        const response = await apiClient.get(`https://${domain}/api/query`, { params });
+        // Axios puts data directly in response.data
+        const result = response.data; 
         if (!result.success) throw new Error('Steam API返回数据异常');
-        
+
         if (isMounted) {
           setSteamData(result.results || []);
           setTotalCount(result.total_count || 0);
         }
-      } catch (err) {
+      } catch (err: any) { // Catch Axios errors
         console.error('Steam数据获取失败:', err);
         if (isMounted) {
-          setSteamError(err instanceof Error ? `Steam数据获取失败: ${err.message}` : '获取Steam数据时发生未知错误');
+          // Extract error message from Axios error or standard error
+          const message = err.response?.data?.message || err.message || '获取Steam数据时发生未知错误';
+          setSteamError(`Steam数据获取失败: ${message}`);
           setSteamData([]);
           setTotalCount(0);
         }
@@ -122,11 +117,13 @@ export function useMarketData({
 
     fetchSteam();
     return () => { isMounted = false; };
-  }, [accessToken, currentPage, itemsPerPage, domain]);
+    // Remove accessToken from dependencies
+  }, [currentPage, itemsPerPage, domain]); 
 
   // Fetch Buff Prices for current Steam items
   useEffect(() => {
-    if (!steamData.length || !accessToken) {
+    // Remove accessToken check
+    if (!steamData.length) {
       setLoadingBuff(false); // Not loading if no data to fetch for
       return;
     }
@@ -136,31 +133,36 @@ export function useMarketData({
       setLoadingBuff(true);
       setBuffError(null);
       const newBuffPrices: Record<string, number | null> = {};
-      
-      const promises = steamData.map(item => 
-        fetch(`https://${domain}/api/buff_price?hash_name=${encodeURIComponent(item.hash_name)}&game=${encodeURIComponent(item.app_name)}`, {
-             headers: { Authorization: `Bearer ${accessToken}` }
+
+      const promises = steamData.map(item =>
+        // Use apiClient.get
+        apiClient.get<BuffPriceResponse>(`https://${domain}/api/buff_price`, {
+          params: {
+            hash_name: item.hash_name,
+            game: item.app_name,
+          }
         })
-        .then(res => {
-            if (!res.ok) throw new Error(`Buff API (${item.hash_name}) 错误! 状态码: ${res.status}`);
-            return res.json();
-        })
-        .then((buffResult: BuffPriceResponse) => { // Use defined type
-            if (buffResult && typeof buffResult.price === 'number') { 
+        .then(response => {
+            // Axios data is in response.data
+            const buffResult = response.data; 
+            if (buffResult && typeof buffResult.price === 'number') {
                  newBuffPrices[item.hash_name] = buffResult.price;
             } else {
                  console.warn(`未找到 ${item.hash_name} 的Buff价格或格式错误`, buffResult);
                  newBuffPrices[item.hash_name] = null; // Indicate price not found/error
             }
         })
-        .catch(err => {
+        .catch((err: any) => { // Catch Axios errors
             console.error(`获取 ${item.hash_name} 的Buff价格失败:`, err);
-            setBuffError(`获取部分Buff价格失败: ${err instanceof Error ? err.message : '未知错误'}`); // Set specific Buff error
+            // Extract error message
+            const message = err.response?.data?.message || err.message || '未知错误';
+            setBuffError(`获取部分Buff价格失败 (${item.hash_name}): ${message}`); // Set specific Buff error
             newBuffPrices[item.hash_name] = null; // Indicate error
         })
       );
 
-      await Promise.allSettled(promises);
+      // Use Promise.allSettled to wait for all requests, even if some fail
+      await Promise.allSettled(promises); 
       if (isMounted) {
         setBuffPrices(newBuffPrices);
         setLoadingBuff(false);
@@ -169,7 +171,8 @@ export function useMarketData({
 
     fetchBuffs();
     return () => { isMounted = false; };
-  }, [steamData, accessToken, domain]); // Depends on steamData
+    // Remove accessToken from dependencies
+  }, [steamData, domain]); 
 
   // Calculate combined data
   const combinedData = useMemo((): CombinedItem[] => {

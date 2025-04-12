@@ -9,6 +9,7 @@ const LoginPage: React.FC = () => {
   let navigate = useNavigate();
   useEffect(()=>{
     onOpenUrl(urls=>{
+      navigate(urls[0].replace("tabber://localhost/callback","/login/callback"))
     })
   },[])
   const handleLogin = () => {

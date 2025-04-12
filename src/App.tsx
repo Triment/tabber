@@ -9,15 +9,18 @@ import {
   getInitialIdentity,
 } from './state'; // Import necessary atoms and helpers
 import { refreshTokenFlow } from './auth'; // Import refresh function
+import useThemeManager from './hooks/useThemeManager'; // Import the theme manager hook
 import LoginPage from './pages/LoginPage';
 import LoginCallbackPage from './pages/LoginCallbackPage';
 import DashboardPage from './pages/DashboardPage'; // Assuming default exports
 import ProtectedRoute from './components/ProtectedRoute'; // Assuming default export
+import DashboardLayout from './components/layout/DashboardLayout'; // Import the new layout
 
 /**
  * Root component responsible for setting up application routes.
  */
 export const App = () => {
+  useThemeManager(); // Initialize theme management
   const isAuth = useAtomValue(isAuthenticatedAtom);
   const [identity, setIdentity] = useAtom(identityAtom); // Get identity state and setter
   const setAuthLoading = useSetAtom(authLoadingAtom); // Get loading state setter
@@ -54,14 +57,19 @@ export const App = () => {
       <Route path="/login/callback" element={<LoginCallbackPage />} />
 
       {/* Protected Routes */}
+      {/* Wrap protected routes that need the layout */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <DashboardLayout> {/* Wrap DashboardPage with the layout */}
+              <DashboardPage />
+            </DashboardLayout>
           </ProtectedRoute>
         }
       />
+      {/* Add other protected routes here, potentially using the same layout */}
+      {/* e.g., <Route path="/settings" element={<ProtectedRoute><DashboardLayout><SettingsPage /></DashboardLayout></ProtectedRoute>} /> */}
 
       {/* Root Redirect Logic */}
       <Route

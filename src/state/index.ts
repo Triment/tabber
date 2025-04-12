@@ -72,3 +72,9 @@ export const createIdentityFromResponse = (response: any): Identity => {
 
 // Helper to get the initial identity state (e.g., for clearing)
 export const getInitialIdentity = (): Identity => initialIdentity;
+
+// --- Theme State ---
+export type Theme = 'light' | 'dark' | 'system';
+
+// Use atomWithStorage to persist theme preference in localStorage
+export const themeAtom = atomWithStorage<Theme>('theme', 'system');
