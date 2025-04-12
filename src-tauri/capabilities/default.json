@@ -8,6 +8,16 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "deep-link:default"
+    "deep-link:default",
+    "core:window:allow-create",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:webview:allow-create-webview",
+    "core:webview:allow-webview-close",
+    "core:webview:allow-webview-size",
+    "core:webview:allow-webview-hide",
+    "core:webview:allow-create-webview-window"
+
   ]
 }

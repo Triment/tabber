@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 import { Menu, Transition, Listbox } from '@headlessui/react';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import {
   Bars3Icon,
   SunIcon,
@@ -33,7 +34,12 @@ const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
   const { t, i18n } = useTranslation();
   const [currentTheme, setTheme] = useAtom(themeAtom);
   const [userInfo] = useAtom(userInfoAtom);
-  const setIdentity = useSetAtom(identityAtom); // For logout
+  const setIdentity = useSetAtom(identityAtom);
+  const [mainWindow, setMainWindow] = useState<WebviewWindow | null>(null);
+
+  useEffect(() => {
+    setMainWindow(new WebviewWindow('main'));
+  }, []);
 
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
   const currentThemeConfig = themes.find((th) => th.name === currentTheme) || themes[2]; // Default to system
@@ -201,6 +207,74 @@ const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
               </Menu.Items>
             </Transition>
           </Menu>
+
+          {/* Window Controls */}
+          <div className="flex items-center gap-x-2">
+            <button
+              className="rounded-md p-1 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-white"
+              onClick={() => {
+                mainWindow?.minimize();
+              }}
+            >
+              <span className="sr-only">Minimize</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+              </svg>
+            </button>
+            <button
+              className="rounded-md p-1 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-white"
+              onClick={async () => {
+                console.log(await mainWindow?.isMaximized())
+                if (await mainWindow?.isMaximized()) {
+                  mainWindow?.unmaximize();
+                } else {
+                  mainWindow?.maximize();
+                }
+              }}
+            >
+              <span className="sr-only">Maximize</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 6V4.5C3 4.22386 3.22386 4 3.5 4H6V6M3 18V19.5C3 19.7761 3.22386 20 3.5 20H6V18M18 6V4.5C18 4.22386 17.7761 4 17.5 4H16V6M18 18V19.5C18 19.7761 17.7761 20 17.5 20H16V18M6 6h12M6 18h12"
+                />
+              </svg>
+            </button>
+            <button
+              className="rounded-md p-1 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-white"
+              onClick={() => {
+                mainWindow?.close();
+                console.log(mainWindow)
+              }}
+            >
+              <span className="sr-only">Close</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

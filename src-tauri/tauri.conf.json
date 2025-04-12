@@ -15,11 +15,34 @@
       {
         "title": "tabber",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "decorations": false
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "custom-permision",
+          "windows": [
+            "*"
+          ],
+          "permissions": [
+            "core:window:allow-is-maximized", 
+            "core:window:default",
+            "core:window:allow-unmaximize",
+            "core:window:allow-create",
+            "core:window:allow-close",
+            "core:window:allow-minimize",
+            "core:window:allow-maximize",
+            "core:webview:allow-create-webview",
+            "core:webview:allow-webview-close",
+            "core:webview:allow-webview-size",
+            "core:webview:allow-webview-hide",
+            "core:webview:allow-create-webview-window"
+          ]
+        }
+      ]
     }
   },
   "bundle": {
