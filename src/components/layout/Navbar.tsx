@@ -14,15 +14,13 @@ import {
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { themeAtom, Theme, userInfoAtom, identityAtom, getInitialIdentity } from '../../state';
+import { languages } from '../../i18n';
 
 interface NavbarProps {
   setSidebarOpen: (open: boolean) => void;
 }
 
-const languages = [
-  { code: 'en', name: 'English' },
-  { code: 'zh', name: '中文' },
-];
+
 
 const themes: { name: Theme; icon: React.ElementType }[] = [
   { name: 'light', icon: SunIcon },
@@ -41,6 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
     setMainWindow(new WebviewWindow('main'));
   }, []);
 
+
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
   const currentThemeConfig = themes.find((th) => th.name === currentTheme) || themes[2]; // Default to system
 
@@ -53,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
     console.log('User logged out');
   };
 
-  return (    <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-900 dark:border-gray-700 tauri-draggable">
+  return (<div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-900 dark:border-gray-700 tauri-draggable">
     <button
       type="button"
       className="-m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-gray-400"
@@ -66,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ setSidebarOpen }) => {
     {/* Separator */}
     <div className="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-700" aria-hidden="true" />
 
-    <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-end">
+    <div data-tauri-drag-region className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 justify-end">
       <div className="flex items-center gap-x-4 lg:gap-x-6">
         {/* Theme Selector */}
         <Listbox value={currentTheme} onChange={setTheme}>

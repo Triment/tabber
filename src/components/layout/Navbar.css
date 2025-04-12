@@ -1,0 +1,42 @@
+.window-control-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px; /* Adjust as needed for icon size */
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.6); /* Icon color */
+  cursor: pointer;
+  padding: 0; /* Remove default padding */
+  line-height: 1; /* Ensure icon is centered vertically */
+  -webkit-app-region: no-drag; /* Ensure buttons themselves are not draggable */
+}
+
+.window-control-button:hover {
+  filter: brightness(0.9);
+}
+
+.window-control-button span {
+  display: none; /* Hide icons initially */
+  pointer-events: none; /* Ensure icons don't interfere with clicks */
+}
+
+.window-control-button-container:hover .window-control-button span {
+   display: inline; /* Show icons on hover of the container */
+}
+
+.window-control-minimize {
+  background-color: #ffbd44;
+}
+
+.window-control-maximize {
+  background-color: #00ca56;
+}
+
+.window-control-close {
+  background-color: #ff6059;
+}

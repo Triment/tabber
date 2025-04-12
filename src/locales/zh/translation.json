@@ -19,5 +19,11 @@
   "common": {
     "loading": "加载中...",
     "error": "发生错误"
+  },
+  "login": {
+    "welcome": "欢迎",
+    "loginButton": "登录",
+    "selectLanguage": "选择语言",
+    "loginDescription": "请登录以继续访问您的仪表板。"
   }
 }

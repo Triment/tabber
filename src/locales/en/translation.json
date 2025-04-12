@@ -19,5 +19,11 @@
   "common": {
     "loading": "Loading...",
     "error": "An error occurred"
+  },
+  "login": {
+    "welcome": "Welcome",
+    "loginButton": "Log In",
+    "selectLanguage": "Select Language",
+    "loginDescription": "Please log in to continue to your dashboard."
   }
 }

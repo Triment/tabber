@@ -35,4 +35,9 @@ i18n
     },
   });
 
+export const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文' },
+];
+
 export default i18n;
